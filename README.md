@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 
+## Команди для запуску
 
-## Getting Started
+Для запуску проєкту в локальному середовищі виконайте наступні команди:
 
-First, run the development server:
+Встановлення всіх необхідних залежностей:
+npm install
 
-```bash
+Запуск сервера розробки:
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Після запуску проєкт буде доступний за адресою http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Реалізовані функції
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Проєкт включає наступний функціонал:
 
-## Learn More
+Керування завданнями
+Створення нових завдань із валідацією на порожній рядок, можливість позначення завдань як виконаних та їх видалення зі списку.
 
-To learn more about Next.js, take a look at the following resources:
+Синхронізація даних
+Реалізовано механізм LocalStorage, який зберігає стан списку в браузері, запобігаючи втраті даних при оновленні сторінки.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Компонентна архітектура
+Код декомпоновано на окремі модулі: TodoForm, TodoList, TodoItem та TodoCounter
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Користувацький інтерфейс
+Використано Tailwind CSS для створення адаптивного дизайну в темних тонах. Додано стан завантаження для кращої інформативності під час ініціалізації.
 
-## Deploy on Vercel
+Додаткові можливості
+Впроваджено функцію редагування тексту завдання через подвійний клік та систему фільтрації за трьома станами: Усі, Активні, Виконані.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Можливі покращення
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+При наявності додаткового часу в проєкт доцільно внести такі зміни:
+
+Перехід на Backend
+Інтеграція Prisma та PostgreSQL для надійного збереження даних на сервері замість локального сховища браузера.
+
+Анімації інтерфейсу
+Використання бібліотеки для плавних візуальних переходів при додаванні або видаленні елементів.
+
+Технологічний стек: Next.js 14, React, TypeScript, Tailwind CSS.
