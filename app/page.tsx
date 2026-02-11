@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 type Todo = {
   id: string;
@@ -14,6 +14,15 @@ export default function TodoPage() {
   const [inputValue, setInputValue] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const addTodo = () => {
     if (!inputValue.trim()) return;
@@ -75,62 +84,68 @@ export default function TodoPage() {
           Додати
         </button>
       </div>
-
-      <ul className="space-y-2">
-        {todos.map((item) => (
-          <li
-            key={item.id}
-            className="flex items-center justify-between gap-4 border border-zinc-800 p-3 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 transition-colors group"
-          >
-            <input
-              type="checkbox"
-              className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-blue-600 focus:ring-blue-500 focus:ring-offset-zinc-900"
-              checked={item.completed}
-              onChange={() => toggleTodo(item.id)}
-            />
-
-            {editingId === item.id ? (
-              <input
-                autoFocus
-                className="bg-zinc-800 border border-blue-500 text-sm px-2 py-1 rounded w-full outline-none"
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
-                onBlur={() => saveEdit(item.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") saveEdit(item.id);
-                  if (e.key === "Escape") setEditingId(null);
-                }}
-              />
-            ) : (
-              <span
-                onDoubleClick={() => startEdit(item.id, item.text)}
-                className={`text-sm cursor-pointer select-none ${
-                  item.completed ? "line-through text-zinc-500" : ""
-                }`}
-              >
-                {item.text}
-              </span>
-            )}
-            <button
-              className="opacity-0 group-hover:opacity-100 bg-red-950/30 hover:bg-red-600 text-red-500 hover:text-white text-xs font-medium px-3 py-1.5 rounded-md border border-red-900/50 transition-all"
-              onClick={() => deleteTodo(item.id)}
+      {isLoading ? (
+        <div className="flex items-center gap-2 text-zinc-500 font-mono text-sm animate-pulse">
+          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+          Будьласка почекайте даннi завнтажуються
+        </div>
+      ) : (
+        <ul className="space-y-2">
+          {todos.map((item) => (
+            <li
+              key={item.id}
+              className="flex items-center justify-between gap-4 border border-zinc-800 p-3 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 transition-colors group"
             >
-              Delete task
-            </button>
-          </li>
-        ))}
-        {todos.length === 0 ? (
-          <span>Ваш список порожнiй</span>
-        ) : (
-          <div>
-            <span>Загльна кiлькiсть завдань: {todos.length}</span>
-            <br />
-            <span>
-              Залишилось виконати: {todos.filter((t) => !t.completed).length}
-            </span>
-          </div>
-        )}
-      </ul>
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-blue-600 focus:ring-blue-500 focus:ring-offset-zinc-900"
+                checked={item.completed}
+                onChange={() => toggleTodo(item.id)}
+              />
+
+              {editingId === item.id ? (
+                <input
+                  autoFocus
+                  className="bg-zinc-800 border border-blue-500 text-sm px-2 py-1 rounded w-full outline-none"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  onBlur={() => saveEdit(item.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveEdit(item.id);
+                    if (e.key === "Escape") setEditingId(null);
+                  }}
+                />
+              ) : (
+                <span
+                  onDoubleClick={() => startEdit(item.id, item.text)}
+                  className={`text-sm cursor-pointer select-none ${
+                    item.completed ? "line-through text-zinc-500" : ""
+                  }`}
+                >
+                  {item.text}
+                </span>
+              )}
+              <button
+                className="opacity-0 group-hover:opacity-100 bg-red-950/30 hover:bg-red-600 text-red-500 hover:text-white text-xs font-medium px-3 py-1.5 rounded-md border border-red-900/50 transition-all"
+                onClick={() => deleteTodo(item.id)}
+              >
+                Delete task
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {todos.length === 0 ? (
+        <span>Ваш список порожнiй</span>
+      ) : (
+        <div>
+          <span>Загльна кiлькiсть завдань: {todos.length}</span>
+          <br />
+          <span>
+            Залишилось виконати: {todos.filter((t) => !t.completed).length}
+          </span>
+        </div>
+      )}
     </main>
   );
 }
