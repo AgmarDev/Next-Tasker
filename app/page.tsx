@@ -20,7 +20,7 @@ export default function TodoPage() {
       id: crypto.randomUUID(),
       text: inputValue,
       completed: false,
-      createdAt: Date.now(),
+      createdAt: new Date(),
     };
 
     setTodos([...todos, newTodo]);
