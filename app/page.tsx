@@ -12,6 +12,8 @@ type Todo = {
 export default function TodoPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
 
   const addTodo = () => {
     if (!inputValue.trim()) return;
@@ -39,6 +41,16 @@ export default function TodoPage() {
     );
   };
 
+  const startEdit = (id: string, currentText: string) => {
+    setEditingId(id);
+    setEditText(currentText);
+  };
+
+  const saveEdit = (id: string) => {
+    setTodos(todos.map((t) => (t.id === id ? { ...t, text: editText } : t)));
+    setEditingId(null);
+  };
+
   return (
     <main className="p-10 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">Список завдань</h1>
@@ -52,6 +64,9 @@ export default function TodoPage() {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setInputValue(e.target.value)
           }
+          onKeyDown={(e) => {
+            if (e.key == "Enter") addTodo();
+          }}
         />
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -73,15 +88,29 @@ export default function TodoPage() {
               checked={item.completed}
               onChange={() => toggleTodo(item.id)}
             />
-            <span
-              style={
-                item.completed
-                  ? { textDecoration: "line-through" }
-                  : { textDecoration: "none" }
-              }
-            >
-              {item.text}
-            </span>
+
+            {editingId === item.id ? (
+              <input
+                autoFocus
+                className="bg-zinc-800 border border-blue-500 text-sm px-2 py-1 rounded w-full outline-none"
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+                onBlur={() => saveEdit(item.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveEdit(item.id);
+                  if (e.key === "Escape") setEditingId(null);
+                }}
+              />
+            ) : (
+              <span
+                onDoubleClick={() => startEdit(item.id, item.text)}
+                className={`text-sm cursor-pointer select-none ${
+                  item.completed ? "line-through text-zinc-500" : ""
+                }`}
+              >
+                {item.text}
+              </span>
+            )}
             <button
               className="opacity-0 group-hover:opacity-100 bg-red-950/30 hover:bg-red-600 text-red-500 hover:text-white text-xs font-medium px-3 py-1.5 rounded-md border border-red-900/50 transition-all"
               onClick={() => deleteTodo(item.id)}
