@@ -39,19 +39,24 @@ interface TodoItemProps {
   onCancel: () => void;
 }
 
+type FilterType = "всі" | "активні" | "виконані";
+
 export default function TodoPage() {
   //Tasks list state
   const [todos, setTodos] = useState<Todo[]>([]);
 
   //Task text state
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>("");
 
   //Eding states
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editText, setEditText] = useState("");
+  const [editText, setEditText] = useState<string>("");
 
   //Loading state
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  //Filter state
+  const [filter, setFilter] = useState<FilterType>("всі");
 
   //Load from loacal
   useEffect(() => {
@@ -110,6 +115,12 @@ export default function TodoPage() {
     setEditingId(null);
   };
 
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "активні") return !todo.completed;
+    if (filter === "виконані") return todo.completed;
+    return true;
+  });
+
   return (
     <main className="p-10 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">Список завдань</h1>
@@ -120,6 +131,22 @@ export default function TodoPage() {
         addTodo={addTodo}
       />
 
+      <div className="flex gap-2 mb-6 text-xs font-mono">
+        {(["всі", "активні", "виконані"] as FilterType[]).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-3 py-1 rounded-full border transition-all ${
+              filter === f
+                ? "bg-blue-600 border-blue-500 text-white"
+                : "border-zinc-800 text-zinc-500 hover:border-zinc-600"
+            }`}
+          >
+            {f.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
       {isLoading ? (
         <div className="flex items-center gap-2 text-zinc-500 font-mono text-sm animate-pulse">
           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -127,7 +154,7 @@ export default function TodoPage() {
         </div>
       ) : (
         <TodoList
-          todos={todos}
+          todos={filteredTodos}
           editingId={editingId}
           editText={editText}
           setEditText={setEditText}
