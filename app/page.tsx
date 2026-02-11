@@ -10,19 +10,38 @@ type Todo = {
 };
 
 export default function TodoPage() {
+  //Tasks list state
   const [todos, setTodos] = useState<Todo[]>([]);
+
+  //Task text state
   const [inputValue, setInputValue] = useState("");
+
+  //Eding states
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
+
+  //Loading state
   const [isLoading, setIsLoading] = useState(true);
 
+  //Load from loacal
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    const savedTodos = localStorage.getItem("todos");
+    if (savedTodos) {
+      try {
+        setTodos(JSON.parse(savedTodos));
+      } catch (error) {
+        console.error("FAILED_TO_PARSE_LOGS", error);
+      }
+    }
+    setIsLoading(false);
   }, []);
+
+  //Saves todo to local store
+  useEffect(() => {
+    if (!isLoading) {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }, [todos, isLoading]);
 
   const addTodo = () => {
     if (!inputValue.trim()) return;
